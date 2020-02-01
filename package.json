@@ -4,7 +4,7 @@
   "description": "A students portal",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index"
+    "start": "node index.js"
   },
   "repository": "https://github.com/doc-han/ACITYStudentPortal.git",
   "author": "doc-han <yahyafarhan48@gmail.com>",
