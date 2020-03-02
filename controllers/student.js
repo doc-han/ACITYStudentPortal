@@ -22,21 +22,25 @@ app.get('/registration',(req,res)=>{
 	student.findOne({studentID}).populate("program").then(sdata=>{
 		semcourse.find({"programID": sdata.program, "year": sdata.year, "semester": 1}).populate([{path: "lecturer", select: "firstname surname"},{path: "course"}]).then(resp=>{
 			courseRegister.findOne({"studentID": sdata._id, "year": sdata.year, "semester": 1}).populate("courses").then(cdata=>{
-				let reg = resp.filter(i=>{
-					let inn = false;
-					cdata.courses.forEach(j=>{
-						if((j._id.toString()).trim()==(i.course._id.toString()).trim()) inn = true;
+				let reg = [];
+				if(cdata!=null){
+					reg = resp.filter(i=>{
+						let inn = false;
+						cdata.courses.forEach(j=>{
+							if((j._id.toString()).trim()==(i.course._id.toString()).trim()) inn = true;
+						})
+						return inn;
 					})
-					return inn;
-				})
-				reg = reg.map(i=>{
-					return {
-						code: i.course.code,
-						name: i.course.name,
-						credit: i.credit,
-						id: i.course._id
-					}
-				})
+					reg = reg.map(i=>{
+						return {
+							code: i.course.code,
+							name: i.course.name,
+							credit: i.credit,
+							id: i.course._id
+						}
+					})
+				}
+				
 
 				res.render('students/registration', {data: resp, sdata, reg});
 			})

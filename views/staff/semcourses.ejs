@@ -75,7 +75,8 @@
 
       <div class=" marketing">
 
-				<!-- Three columns of text below the carousel -->
+        <!-- Three columns of text below the carousel -->
+        <div class="container-fluid"><a href="/staff/programs"><button class="btn mt-3 btn-secondary">Back</button></a></div>
         <div class="row mt-5">
             <style>
                 .year {
@@ -160,6 +161,7 @@
             </div>
           </div>
 					<div class="col-lg-6">
+            <div class="alert-place"></div>
                         <h3><%= data.name %></h3>
                         <div class="ground"></div>
                         <form id="sem1" method="POST" action="" class="year">
@@ -390,6 +392,11 @@
           url: "/staff/semcourses",
           data: {data},
           success: function(r){
+            let tempp = `<div class="alert alert-primary">Saved successfully!</div>`;
+            $(".alert-place").append(tempp);
+            setTimeout(function(){
+              $(".alert-place").html("");
+            },2000)
             console.log(r);
           }
         })

@@ -6,7 +6,9 @@ router.post('/login', (req,res)=>{
     const { type, userID, userPass } = req.body;
     if(type==1){
         // do student login
+        console.log(req.body)
         student.findOne({studentID: userID, password: userPass}).then(data=>{
+            console.log(data)
             if(data){
                 req.session.student = true;
                 req.session.studentID = userID;
