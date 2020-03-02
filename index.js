@@ -15,8 +15,9 @@ app.use(require('morgan')('dev'));
 app.use(cookieParser());
 
 let dbURI = `mongodb://${process.env.DBUSER}:${process.env.DBPASS}@ds131296.mlab.com:31296/acity`
-if(process.env.Dev)
+if(process.env.Dev == true){
   dbURI = `mongodb://127.0.0.1:27017/test`
+}
 
 mongoose.connect(dbURI,{
 	useNewUrlParser: true
