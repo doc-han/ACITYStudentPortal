@@ -7,10 +7,14 @@ let programSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	code: {
+		type: String,
+		required: true
+	},
 	years: {
 		type: Number,
 		required: true
 	}
 })
 
-module.exports = mongoose.model('Program', programSchema);
+module.exports = mongoose.model('program', programSchema);

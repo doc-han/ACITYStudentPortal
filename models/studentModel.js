@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+//const bcrypt = require('bcrypt');
 
 const Schema = mongoose.Schema;
 
@@ -25,13 +26,24 @@ let studentSchema = new Schema({
 		},
 		program: {
 			type: Schema.Types.ObjectId,
-			ref: 'Program'
+			ref: 'program'
 		},
 		password: {
 			type: String,
 			required: true
+		},
+		year: {
+			type: Number,
+			required: true 
 		}
 });
+
+// studentSchema.pre('save', function(next){
+// 	bcrypt.hash(this.password, 10, function(err, hash) {
+// 		this.password = hash;
+// 		next();
+// 	});
+// })
 
 const student = mongoose.model('students', studentSchema);
 

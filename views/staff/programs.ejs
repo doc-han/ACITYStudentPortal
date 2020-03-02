@@ -16,31 +16,7 @@
   </head>
   <body>
 
-    <header>
-      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="#">Carousel</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-          </ul>
-          <!-- <form class="form-inline mt-2 mt-md-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form> -->
-        </div>
-      </nav>
-    </header>
+    <%- include('header.ejs') %>
 
     <main role="main">
 
@@ -102,22 +78,24 @@
 				<!-- Three columns of text below the carousel -->
         <div class="row mt-5">
 					<div class="col-lg-5">
+						<form method="POST" action="/staff/programs">
 						<h3>Add new Program</h3>
 						<div class="form-group">
 								<label for="exampleFormControlInput1">Program name</label>
-								<input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+								<input type="text" name="name" class="form-control" id="exampleFormControlInput1" placeholder="">
 						</div>
 						<div class="form-group">
 								<label for="exampleFormControlInput1">Program code</label>
-								<input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+								<input type="text" name="code" class="form-control" id="exampleFormControlInput1" placeholder="">
 						</div>
 						<div class="form-group">
 								<label for="exampleFormControlInput1">Years</label>
-								<input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
+								<input type="number" name="years" class="form-control" id="exampleFormControlInput1" placeholder="">
 						</div>
 						<div class="form-group">
-							<button class="btn btn-primary form-control">Add</button>
+							<button type="submit" class="btn btn-primary form-control">Add</button>
 						</div>
+					</form>
 					</div>
 					<div class="col-lg-7">
 						<h3>Available Programs</h3>
@@ -128,27 +106,45 @@
 										<th scope="col">Name</th>
 										<th scope="col">Code</th>
 										<th scope="col">years</th>
+                    <th scope="col">Action 1</th>
+                    <th scope="col">Action 2</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<th scope="row">1</th>
-										<td>Computer Science/Engineering</td>
-										<td>CSM</td>
-										<td>4</td>
-									</tr>
-									<tr>
-										<th scope="row">2</th>
-										<td>Business Administration</td>
-										<td>BAD</td>
-										<td>5</td>
-									</tr>
-									<tr>
-										<th scope="row">3</th>
-										<td>Mechanical Engineering</td>
-										<td>MCE</td>
-										<td>6</td>
-									</tr>
+									<% data.forEach((i,index)=>{ %>
+										<tr>
+												<th scope="row"><%= index+1 %></th>
+												<td><%= i.name %></td>
+												<td><%= i.code %></td>
+												<td><%= i.years %></td>
+												<td>
+                          <div class="dropdown show">
+                            <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              View Courses
+                            </a>
+                          
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                              <% for(let j=1;j<=i.years;j++){ %>
+                                <a class="dropdown-item" href="semcourses?code=<%=i.code%>&year=<%=j%>">Year <%=j%></a>
+                              <% } %>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="dropdown show">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Edit Courses
+                            </a>
+                          
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                              <% for(let j=1;j<=i.years;j++){ %>
+                                <a class="dropdown-item" href="semcourses?code=<%=i.code%>&year=<%=j%>">Year <%=j%></a>
+                              <% } %>
+                            </div>
+                          </div>
+                        </td>
+										</tr>
+									<% }) %>
 								</tbody>
 							</table>
 					</div>

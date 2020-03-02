@@ -30,8 +30,9 @@
           <a class="nav-link" rel-data="Staff" href="#">Staff</a>
         </li>
       </ul>
+      <div class="alert-area"></div>
       <label for="inputEmail" class="sr-only">Email address</label>
-      <input type="email" id="userEmail" class="form-control" placeholder="Student ID" required autofocus>
+      <input type="text" id="userEmail" class="form-control" placeholder="Student ID" required>
       <label for="inputPassword" class="sr-only">Password</label>
       <input type="password" id="userPass" class="form-control" placeholder="Password" required>
       <div class="checkbox mb-3">
@@ -71,13 +72,22 @@
           url: '/auth/login',
           data: data,
           success: function(res){
-            if(res.type==1){
-							window.location = '/student';
-						}else if(res.type==2){
-
-						}else{
-							window.location = '/staff';
-						}
+            let loc;
+            if(type==1) loc = "/student";
+            else if(type==2) loc = "/lecturer";
+            else loc = "/staff";
+            let alrt = $(".alert-area");
+            alrt.text(res.msg);
+            if(res.done){
+              alrt.removeClass("alert-danger");
+              alrt.addClass("alert alert-primary");
+              setTimeout(function(){
+                window.location = loc;
+              },3000);
+            }else{
+              alrt.removeClass("alert-primary");
+              alrt.addClass("alert alert-danger");
+            }
           }
         })
       })
