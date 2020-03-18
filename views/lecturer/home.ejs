@@ -10,6 +10,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css">
 
     <!-- Custom styles for this template -->
     <link href="/css/carousel.css" rel="stylesheet">
@@ -75,81 +76,33 @@
 
       <div class="container marketing">
 
-				<!-- Three columns of text below the carousel -->
+        <!-- Three columns of text below the carousel -->
         <div class="row mt-5">
-					<div class="col-lg-5">
-						<form method="POST" enctype="multipart/form-data" action="/staff/students">
-            <h3>Add new Student</h3>
-						<div class="form-group">
-								<label for="exampleFormControlInput1">First name</label>
-								<input type="text" name="firstname" class="form-control" id="exampleFormControlInput1" placeholder="">
-						</div>
-						<div class="form-group">
-								<label for="exampleFormControlInput1">Surname</label>
-								<input type="text" name="surname" class="form-control" id="exampleFormControlInput1" placeholder="">
-						</div>
-						<div class="form-group">
-								<label for="exampleFormControlInput1">StudentID</label>
-								<input type="text" name="studentID" value="<%= pd.id %>" class="form-control" id="exampleFormControlInput1" placeholder="" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Email</label>
-                            <input type="text" name="email" class="form-control" id="exampleFormControlInput1" placeholder="">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Mobile</label>
-                            <input type="text" name="mobile" class="form-control" id="exampleFormControlInput1" placeholder="">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Program</label>
-                            <select class="form-control" name="program">
-                                <% pdata.forEach(i=>{ %>
-                                    <option value="<%= i._id%>"><%= i.name%></option>
-                                <% }) %>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                          <label for="exampleFormControlInput1">Year</label>
-                          <input type="text" name="year" class="form-control" id="exampleFormControlInput1" placeholder="">
-                      </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Password</label>
-                            <input type="text" value="<%= pd.pass %>" name="password" class="form-control" id="exampleFormControlInput1" placeholder="" readonly>
-                        </div>
-                        <div class="form-group">
-                          <label for="">Passport picture</label> <br>
-                          <input type="file" class="form-control" name="pic" accept="image/*" id="">
-                        </div>
-						<div class="form-group">
-							<button type="submit" class="btn btn-primary form-control">Add</button>
-						</div>
-					</form>
-					</div>
-					<div class="col-lg-7">
-						<h3>Available Programs</h3>
-						<table class="table table-striped">
-								<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Name</th>
-										<th scope="col">Program</th>
-										<th scope="col">year</th>
-										<th scope="col">Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									<% data.forEach((i,index)=>{ %>
-										<tr>
-												<th scope="row"><%= index+1 %></th>
-												<td><%= i.firstname+" "+i.surname %></td>
-												<td><%= i.program.name %></td>
-												<td><%= i.year %></td>
-												<td><a href="/studentviewer/<%=i.studentID%>" class="btn btn-primary">Details</a></td>
-										</tr>
-									<% }) %>
-								</tbody>
-							</table>
-					</div>
+          <div class="col-lg-4">
+							
+            <!-- <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p> -->
+            <p><a href="/lecturer/profile" role="button">
+              <img class="rounded-circle" src="/img/staff-profile.png" alt="Generic placeholder image" width="140" height="140">
+              <h2>Profile</h2>
+            </a></p>
+          </div>
+          <div class="col-lg-4">
+            
+            <!-- <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p> -->
+            <p><a href="/lecturer/studentsearch" role="button">
+              <img class="rounded-circle" src="/img/staff-search.png" alt="Generic placeholder image" width="140" height="140">
+            <h2>Student Viewer</h2>
+            </a></p>
+          </div>
+          
+          <div class="col-lg-4">
+            
+            <!-- <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p> -->
+            <p><a href="/lecturer/classes" role="button">
+              <img class="rounded-circle" src="/img/staff-class.png" alt="Generic placeholder image" width="140" height="140">
+            <h2>Classes</h2>
+            </a></p>
+          </div>
         </div><!-- /.row -->
 
 
@@ -198,11 +151,6 @@
       </div><!-- /.container -->
 
 
-      <!-- FOOTER -->
-      <footer class="container">
-        <p class="float-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2017-2018 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-      </footer>
     </main>
 
     <!-- Bootstrap core JavaScript

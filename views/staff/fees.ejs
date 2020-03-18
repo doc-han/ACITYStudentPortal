@@ -12,7 +12,6 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/css/carousel.css" rel="stylesheet">
   </head>
   <body>
 
@@ -74,83 +73,50 @@
       <!-- Wrap the rest of the page in another container to center all the content. -->
 
       <div class="container marketing">
+          <div class="row mt-5">
+              <div class="container col-lg-6 mt-5" >
+
+                  <div class="text-center">
+                    <img src="/img/staff-upload-csv.png" alt="">
+                    <h2>Upload payment csv</h2>
+                    <form action="/staff/xls" method="POST" enctype="multipart/form-data">
+                      <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"" name="xls" class="btn btn-dark" />
+                      <button id="xls-send" type="submit" class="btn btn-dark">Upload</button>
+                    </form>
+                    
+                  </div>
+              </div>
+              <div class="container col-lg-6 mt-5" >
+                <div class="text-center">
+                  <img src="/img/staff-set-fees.png" alt="">
+                  <h2>Set Program fees</h2>
+                  <a href="setfees" class="btn btn-dark">Here</a>
+                </div>
+                
+              </div>
+          </div>
+          <div class="row mt-5">
+            <div class="container">
+              <% if(locals.data){ %>
+                <div class="alert alert-danger">
+                  These index numbers aren't in the system
+                  <b>
+                    <%= data.missing.join(", ") %>
+                  </b> 
+                </div>
+              <% } %>
+              <% if(locals.success){ %>
+                <div class="alert alert-success">
+                  Payment has been reflected to student accounts
+                </div>
+              <% } %>
+
+              
+            </div>
+          </div>
+          
 
 				<!-- Three columns of text below the carousel -->
-        <div class="row mt-5">
-					<div class="col-lg-5">
-						<form method="POST" enctype="multipart/form-data" action="/staff/students">
-            <h3>Add new Student</h3>
-						<div class="form-group">
-								<label for="exampleFormControlInput1">First name</label>
-								<input type="text" name="firstname" class="form-control" id="exampleFormControlInput1" placeholder="">
-						</div>
-						<div class="form-group">
-								<label for="exampleFormControlInput1">Surname</label>
-								<input type="text" name="surname" class="form-control" id="exampleFormControlInput1" placeholder="">
-						</div>
-						<div class="form-group">
-								<label for="exampleFormControlInput1">StudentID</label>
-								<input type="text" name="studentID" value="<%= pd.id %>" class="form-control" id="exampleFormControlInput1" placeholder="" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Email</label>
-                            <input type="text" name="email" class="form-control" id="exampleFormControlInput1" placeholder="">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Mobile</label>
-                            <input type="text" name="mobile" class="form-control" id="exampleFormControlInput1" placeholder="">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Program</label>
-                            <select class="form-control" name="program">
-                                <% pdata.forEach(i=>{ %>
-                                    <option value="<%= i._id%>"><%= i.name%></option>
-                                <% }) %>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                          <label for="exampleFormControlInput1">Year</label>
-                          <input type="text" name="year" class="form-control" id="exampleFormControlInput1" placeholder="">
-                      </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlInput1">Password</label>
-                            <input type="text" value="<%= pd.pass %>" name="password" class="form-control" id="exampleFormControlInput1" placeholder="" readonly>
-                        </div>
-                        <div class="form-group">
-                          <label for="">Passport picture</label> <br>
-                          <input type="file" class="form-control" name="pic" accept="image/*" id="">
-                        </div>
-						<div class="form-group">
-							<button type="submit" class="btn btn-primary form-control">Add</button>
-						</div>
-					</form>
-					</div>
-					<div class="col-lg-7">
-						<h3>Available Programs</h3>
-						<table class="table table-striped">
-								<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Name</th>
-										<th scope="col">Program</th>
-										<th scope="col">year</th>
-										<th scope="col">Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									<% data.forEach((i,index)=>{ %>
-										<tr>
-												<th scope="row"><%= index+1 %></th>
-												<td><%= i.firstname+" "+i.surname %></td>
-												<td><%= i.program.name %></td>
-												<td><%= i.year %></td>
-												<td><a href="/studentviewer/<%=i.studentID%>" class="btn btn-primary">Details</a></td>
-										</tr>
-									<% }) %>
-								</tbody>
-							</table>
-					</div>
-        </div><!-- /.row -->
 
 
         <!-- START THE FEATURETTES -->
@@ -197,22 +163,21 @@
 
       </div><!-- /.container -->
 
-
-      <!-- FOOTER -->
-      <footer class="container">
-        <p class="float-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2017-2018 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-      </footer>
     </main>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="/js/vendor/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
     <script src="/js/vendor/holder.min.js"></script>
+    <script>
+      $("#xls-send").click(function(){
+        let frm = $("form input");
+      })
+    </script>
   </body>
 </html>

@@ -6,9 +6,28 @@ const course = require('../models/courseModel');
 const student = require('../models/studentModel');
 const lecturer = require('../models/lecturerModel');
 const semcourse = require('../models/semCoursesModel');
+const {fee, paidfee} = require('../models/feeModel');
+const config = require('../models/configModel');
+const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
+const upload = require('../config/upload');
+const fs = require('fs');
+const nodeXLS = require('node-xlsx');
 
 app.get('/', (req,res)=>{
-	res.render('staff/home');
+	let bins = {registration: false, result: false};
+	config.find({}).then(resp=>{
+		if(resp){
+			resp.forEach(i=>{
+				bins[i.metaname] = i.metaval;
+			})
+		}
+		res.render('staff/home', {bins});
+	})
+})
+
+app.get('/studentsearch',(req,res)=>{
+	res.render('staff/studentsearch');
 })
 
 app.get('/programs', (req,res)=>{
@@ -20,8 +39,20 @@ app.post('/programs', (req,res)=>{
 	// add new program
 	req.body.code = req.body.code.toUpperCase();
 	let nProgram = new program(req.body);
-	nProgram.save();
-	res.redirect('/staff/programs');
+	nProgram.save().then(sdata=>{
+		new fee({
+			program: nProgram._id,
+			continuous: false,
+			amount: 0
+		}).save();
+		new fee({
+			program: nProgram._id,
+			continuous: true,
+			amount: 0
+		}).save();
+		res.redirect('/staff/programs');
+	});
+	
 })
 
 app.get('/courses', (req,res)=>{
@@ -39,7 +70,7 @@ app.post('/courses', (req,res)=>{
 app.get('/students', (req,res)=>{
 	program.find({}).then(pdata=>{
 		student.find({}).populate("program").then(data=>{
-			console.log(data)
+			//console.log(data)
 			let id = Math.floor(Math.random()*10000000);
 			let pass = (rs.generate(7)).toLowerCase();
 			
@@ -48,11 +79,18 @@ app.get('/students', (req,res)=>{
 	})
 	
 })
-app.post('/students', (req,res)=>{
+app.post('/students', upload.single('pic'), (req,res)=>{
 	// add new student
-	let nStudent = new student(req.body);
-	nStudent.save();
-	res.redirect('/staff/students');
+	
+	
+	cloudinary.uploader.upload(req.file.path,(err,result)=>{
+		if(err) throw err;
+		req.body.profilePic = result.public_id;
+		let nStudent = new student(req.body);
+		nStudent.save();
+		res.redirect('/staff/students');
+	})
+	
 })
 
 app.get('/lecturers', (req,res)=>{
@@ -63,13 +101,16 @@ app.get('/lecturers', (req,res)=>{
 		})
 	
 })
-app.post('/lecturers', (req,res)=>{
+app.post('/lecturers', upload.single('pic'), (req,res)=>{
 	// add new student
-	// res.send(req.body);
-	console.log(req.body)
-	let nLecturer = new lecturer(req.body);
-	nLecturer.save();
-	res.redirect('/staff/lecturers');
+	cloudinary.uploader.upload(req.file.path, (err,result)=>{
+		if(err)throw err;
+		req.body.profilePic = result.public_id;
+		let nLecturer = new lecturer(req.body);
+		nLecturer.save();
+		res.redirect('/staff/lecturers');
+	})
+	
 })
 
 // takes query program code and year
@@ -106,30 +147,98 @@ app.post('/semcourses', (req,res)=>{
 					res.send({done: true});
 				}
 	})
-	// program.findOne({code: body.code}).then(pres=>{
-	// 	let sem1 = new semcourse({
-	// 		programID: pres._id,
-	// 		year: body.year,
-	// 		semester: 1,
-	// 		courses: body["courses1[]"],
-	// 		lecturers: body["lecturers1[]"],
-	// 		credits: body["credits1[]"],
-	// 	})
-	// 	let sem2 = new semcourse({
-	// 		programID: pres._id,
-	// 		year: body.year,
-	// 		semester: 2,
-	// 		courses: body["courses2[]"],
-	// 		lecturers: body["lecturers2[]"],
-	// 		credits: body["credits2[]"],
-	// 	})
-	// 	sem1.save().then(r=>{
-	// 		sem2.save().then(rr=>{
-	// 			res.json({done: true})
-	// 		})
-	// 	})
-	// })
-	//res.json(req.body)
+})
+
+app.get('/fees', (req,res)=>{
+	res.render("staff/fees")
+})
+
+app.get('/setfees', (req,res)=>{
+	fee.find({continuous: true}).populate("program").then(cdata=>{
+		fee.find({continuous: false}).populate("program").then(fdata=>{
+			res.render("staff/setfees", {fdata, cdata})
+		})
+		
+	})
+	
+})
+
+app.post('/setfees/:opt',(req,res)=>{
+	let continuous = true;
+	if(req.params.opt=="fresh") continuous = false;
+	let data = JSON.parse(req.body.data);
+	console.log(data)
+	data.forEach((i,e)=>{
+		fee.update({"program": i.name, "continuous": continuous},
+		{$set: {amount: i.value}},{upsert: true}).then(console.log).catch(console.error);
+		if(e==data.length-1){
+			res.send({done: true})
+		}
+	})
+})
+
+class tings {
+	constructor(){
+		this.arr = [];
+		this.ids = [];
+	}
+	add(index,value){
+		this.ids.push(index);
+		this.arr.push({index,value});
+	}
+	getIndexes(){
+		return this.ids;
+	}
+	getObject() {
+		return this.arr;
+	}
+}
+
+async function savor(found,amtarr){
+				for(let i=0;i<found.length;i++){
+					let npaid = new paidfee({
+						studentID: found[i]._id,
+						year: found[i].year,
+						amount: amtarr[i].value,
+						date: new Date()
+					})
+					await npaid.save();
+				}
+}
+
+app.post('/xls', upload.single('xls'), (req,res)=>{
+	// res.sendFile(req.file.path);
+		// xlsParser.onFileSelection(req.file.path).then(data=>{
+		// 	console.log(data)
+		// }).catch(console.error)
+		// let file = fs.readFileSync(req.file.path, 'utf8');
+		// readExcelFile(file).then(console.log).catch(console.error)
+		let obj = nodeXLS.parse(fs.readFileSync(req.file.path));
+		let arr = new tings();
+		obj.forEach(i=>{
+			i.data.forEach(j=>{
+				arr.add(...j);
+			})
+		})
+		fee.validateIds(arr.getIndexes()).then(data=>{
+			// console.log(data)
+			let amtarr = arr.getObject();
+			if(data.valid){
+				savor(data.found, amtarr);
+				res.render('staff/fees', {data: false, success: true})
+			}else{
+				res.render('staff/fees', {data})
+			}
+		})
+		// console.log(resp)
+		//console.log(obj[0].data)
+})
+
+app.post('/config', (req,res)=>{
+	let {name, value} = req.body;
+	config.updateOne({metaname: name}, {$set: {metaval: value}},{upsert: true}).then(d=>{
+		res.json(d);
+	})
 })
 
 app.get('/logout', (req,res)=>{

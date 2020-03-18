@@ -5,7 +5,12 @@ const Schema = mongoose.Schema;
 let courseRegisterSchema = new Schema({
     studentID: {
         type: Schema.Types.ObjectId,
-        ref: 'student',
+        ref: 'students',
+        required: true
+    },
+    program: {
+        type: Schema.Types.ObjectId,
+        ref: 'program',
         required: true
     },
     year: {

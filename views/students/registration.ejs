@@ -84,7 +84,11 @@
           
           
 					<div class="col-lg-6">
-
+            <%let ai = 0%>
+            <%data.forEach(i=>{%>
+              <%ai += i.credit%>
+            <%})%>
+            <h2>Total credits: <%=ai%></h2>
             <div class="panel panel-default">
               <div class="panel-heading">Available courses</div>
               <div class="panel-body">
@@ -99,7 +103,7 @@
 
 					</div>
 					<div class="col-lg-6">
-            
+            <h2>Registered Credits: <span class="regcredit"></span></h2>
             <div class="panel panel-primary">
               <div class="panel-heading">Registered courses</div>
               <div class="panel-body">
@@ -200,10 +204,13 @@
         })
         function showRegs(){
           let blocks;
+          let regcredits = 0;
           blocks = [...registered].map(i=>{
+            regcredits += parseInt(i.credit);
             return `<a href="#" ref-data="${i.code}" class="list-group-item remitem">${i.name}<span class="badge badge-light">${i.credit}</span></a>`;
           })
           $(".regs").html(blocks);
+          $(".regcredit").text(regcredits);
           console.log(registered)
         }
         $(document).on('click','.remitem',function(){

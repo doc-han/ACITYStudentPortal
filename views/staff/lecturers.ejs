@@ -78,7 +78,7 @@
 				<!-- Three columns of text below the carousel -->
         <div class="row mt-5">
 					<div class="col-lg-5">
-						<form method="POST" action="/staff/lecturers">
+						<form method="POST" enctype="multipart/form-data" action="/staff/lecturers">
 						<h3>Add new Lecturer</h3>
 						<div class="form-group">
 								<label for="exampleFormControlInput1">First name</label>
@@ -103,6 +103,10 @@
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Password</label>
                             <input type="text" name="password" value="<%=pd.pass%>" class="form-control" id="exampleFormControlInput1" placeholder="" readonly>
+                        </div>
+                        <div class="form-group">
+                          <label for="">Passport pic</label>
+                          <input type="file" name="pic" id="" class="form-control">
                         </div>
 						<div class="form-group">
 							<button type="submit" class="btn btn-primary form-control">Add</button>

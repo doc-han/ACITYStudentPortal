@@ -1,8 +1,11 @@
 const express = require('express');
 const app = express.Router();
+const cloudinary = require('cloudinary').v2;
 const student = require('../models/studentModel');
 const semcourse = require('../models/semCoursesModel');
 const courseRegister = require('../models/courseRegisterModel');
+const {registrationOpen} = require('../config/authorize');
+const {paidfee} = require('../models/feeModel')
 
 app.get('/', (req,res)=>{
 	console.log(req.session.studentID)
@@ -12,12 +15,15 @@ app.get('/', (req,res)=>{
 app.get('/profile',(req,res)=>{
 	let {studentID} = req.session;
 	student.findOne({studentID}).populate("program").then(data=>{
-		res.render('students/profile', {student: data});
+		let profilePic = cloudinary.url(data.profilePic);
+		res.render('students/profile', {student: data,profilePic});
 	})
 	
 })
 
-app.get('/registration',(req,res)=>{
+
+
+app.get('/registration',registrationOpen, (req,res)=>{
 	let {studentID} = req.session;
 	student.findOne({studentID}).populate("program").then(sdata=>{
 		semcourse.find({"programID": sdata.program, "year": sdata.year, "semester": 1}).populate([{path: "lecturer", select: "firstname surname"},{path: "course"}]).then(resp=>{
@@ -55,10 +61,24 @@ app.post('/registration', (req,res)=>{
 	})
 	student.findOne({studentID}).then(sdata=>{
 		// semester has to be the current semester
-		courseRegister.update({"studentID": sdata._id, "year": sdata.year, "semester": 1},{
+		courseRegister.update({"studentID": sdata._id, "program": sdata.program, "year": sdata.year, "semester": 1},{
 			courses: regcourses
 		},{upsert: true}).then(data=>{
 			 res.json({done: true})
+		})
+	})
+})
+
+app.get('/unavailable', (req,res)=>{
+	res.send('This feature hasn\'t been enabled by the staff');
+})
+
+app.get('/fees',(req,res)=>{
+	let {studentID} = req.session;
+	student.findOne({studentID}).then(sdata=>{
+		paidfee.find({studentID: sdata._id}).then(fdata=>{
+			console.log(fdata);
+			res.render("students/fees",{fdata})
 		})
 	})
 })

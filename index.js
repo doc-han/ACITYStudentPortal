@@ -1,10 +1,11 @@
-const express = require('express');
+ const express = require('express');
 require('dotenv').config();
 const app = express();
 const mongoose =  require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const cloudinary = require('cloudinary');
 const MongoStore = require('connect-mongo')(session);
 
 app.set('view engine', 'ejs');
@@ -13,6 +14,12 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname+'/public'));
 app.use(require('morgan')('dev'));
 app.use(cookieParser());
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_USERNAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 let dbURI = `mongodb://${process.env.DBUSER}:${process.env.DBPASS}@ds131296.mlab.com:31296/acity`
 if(process.env.Dev == "true"){
@@ -41,6 +48,7 @@ const {studentLoggedIn,lecturerLoggedIn,staffLoggedIn} = require('./config/autho
 app.use('/auth', require("./controllers/auth"));
 app.use('/student', studentLoggedIn, require("./controllers/student"));
 app.use('/staff', staffLoggedIn, require("./controllers/staff"));
+app.use('/lecturer', lecturerLoggedIn, require("./controllers/lecturer"));
 app.use('/', require("./controllers/main"));
 
 

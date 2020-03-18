@@ -35,6 +35,10 @@ let studentSchema = new Schema({
 		year: {
 			type: Number,
 			required: true 
+		},
+		profilePic: {
+			type: String,
+			required: true
 		}
 });
 
