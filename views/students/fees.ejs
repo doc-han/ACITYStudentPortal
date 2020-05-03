@@ -95,10 +95,30 @@
                             <tr>
                                 <th scope="row"><%=e+1%></th>
                                 <td><%=i.year%></td>
-                                <td><%=i.amount%></td>
-                                <td><%=i.date%></td>
+                                <td>GHS<%=i.amount%></td>
+                                <td><%=i.date %></td>
                             </tr>
                         <% }) %>
+                    </tbody>
+                  </table>
+
+
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Fees</th>
+                        <th>Total Paid</th>
+                        <th>Amount Due</th>
+                        <th scope="col">Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>GHS <%= data.due %></td>
+                        <td>GHS <%= data.paid %></td>
+                        <td>GHS <%= data.amtdue %></td>
+                        <td>GHS <%= data.balance %></td>
+                      </tr>
                     </tbody>
                   </table>
             </div>

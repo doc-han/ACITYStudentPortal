@@ -96,6 +96,7 @@
                         
                     </tbody>
                 </table>
+                <div class="falert"></div>
                 <div class="text-center">
                   <buttton class="btn btn-secondary save-fresh">Save</buttton>
                 </div>
@@ -126,6 +127,7 @@
                     </tbody>
                     
                 </table>
+                <div class="calert"></div>
                 <div class="text-center">
                   <buttton class="btn btn-secondary save-cont">Save</buttton>
                 </div>
@@ -194,15 +196,23 @@
     <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
     <script src="/js/vendor/holder.min.js"></script>
     <script>
+      let ml = "<div class='alert alert-success'>Updated Successfully!</div>"
       $(".save-fresh").click(function(){
         let form = $("#fresh").serializeArray();
         let data = {data: JSON.stringify(form)};
+        $(".save-fresh").text("loading...");
         $.ajax({
           url: '/staff/setfees/fresh',
           method: 'POST',
           data,
           success: function(res){
-            console.log(res)
+            if(res.done){
+              $(".falert").html(ml);
+              $(".save-fresh").text("Save");
+              setTimeout(function(){
+                $(".falert").html("");
+              },2000);
+            }
           }
         })
       })
@@ -210,12 +220,19 @@
       $(".save-cont").click(function(){
         let form = $("#cont").serializeArray();
         let data = {data: JSON.stringify(form)};
+        $(".save-cont").text("loading...");
         $.ajax({
           url: '/staff/setfees/cont',
           method: 'POST',
           data,
           success: function(res){
-            console.log(res)
+            if(res.done){
+              $(".calert").html(ml);
+              $(".save-cont").text("Save");
+              setTimeout(function(){
+                $(".calert").html("");
+              },2000);
+            }
           }
         })
       })

@@ -132,17 +132,18 @@
                   display: flex;
                   flex-direction: column;
                 }
-                .item .copy {
+                /* .item .copy {
                   height: inherit;
                   padding: 5px;
                   text-align: center;
                   border-radius: 5px;
                   color: #fff;
                   background-color: blue;
-                }
+                } */
             </style>
           <div class="col-lg-3">
             <div class="ml-5">
+              
               <label for="">Search for Course</label>
               <input type="text" class="form-control mb-3">
               <div class="result">
@@ -154,7 +155,7 @@
                     </div>
                     <div class="code"><%=i.code%></div>
                   </div>
-                  <button class="btn btn-primary">copy</button>
+                  <button ref-data="<%=i.code%>" class="btn btn-primary copy">copy</button>
                 </div>
                 <%})%>
               </div>
@@ -174,7 +175,13 @@
                                 <div class="course">
                                   <div class="inputg">
                                       <label>Course code</label>
-                                      <input class="form-control" value="<%=i.course.code%>" name="coursecode" type="text">
+                                      <div class="input-group">
+                                        <input class="form-control" value="<%=i.course.code%>" name="coursecode" type="text">
+                                        <div class="input-group-append">
+                                          <button class="btn btn-outline-secondary paster" type="button">Paste</button>
+                                        </div>
+                                      </div>
+                                      
                                   </div>
                                   <div class="inputg">
                                       <label>Credits</label>
@@ -182,8 +189,12 @@
                                   </div>
                                   <div class="inputg">
                                       <label>LecturerID</label>
-                                      <input type="text" name="lecturerID" value="<%=i.lecturer.lecturerID%>" class="form-control">
-                                  </div>
+                                      <div class="input-group">
+                                        <input class="form-control" name="lecturerID" value="<%=i.lecturer.lecturerID%>" type="text">
+                                        <div class="input-group-append">
+                                          <button class="btn btn-outline-secondary paster" type="button">Paste</button>
+                                        </div>
+                                      </div>                                  </div>
                               </div>
                               <% }) %>
                           </div>
@@ -201,15 +212,24 @@
                                 <div class="course">
                                   <div class="inputg">
                                       <label>Course code</label>
-                                      <input class="form-control" value="<%=i.course.code%>" name="coursecode" type="text">
-                                  </div>
+                                      <div class="input-group">
+                                        <input class="form-control" value="<%=i.course.code%>" name="coursecode" type="text">
+                                        <div class="input-group-append">
+                                          <button class="btn btn-outline-secondary paster" type="button">Paste</button>
+                                        </div>
+                                      </div>                                  </div>
                                   <div class="inputg">
                                       <label>Credits</label>
                                       <input type="text" name="credits" value="<%=i.credit%>" class="form-control">
                                   </div>
                                   <div class="inputg">
                                       <label>LecturerID</label>
-                                      <input type="text" name="lecturerID" value="<%=i.lecturer.lecturerID%>" class="form-control">
+                                      <div class="input-group">
+                                        <input class="form-control" name="lecturerID" value="<%=i.lecturer.lecturerID%>" type="text">
+                                        <div class="input-group-append">
+                                          <button class="btn btn-outline-secondary paster" type="button">Paste</button>
+                                        </div>
+                                      </div>
                                   </div>
                               </div>
                               <% }) %>
@@ -234,7 +254,7 @@
                     </div>
                     <div class="code"><%=i.lecturerID%></div>
                   </div>
-                  <button class="btn btn-primary">copy</button>
+                  <button ref-data="<%=i.lecturerID%>" class="btn btn-primary copy">copy</button>
                 </div>
                 <%})%>
               </div>
@@ -291,7 +311,7 @@
       <!-- FOOTER -->
       <footer class="container">
         <p class="float-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2017-2018 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+        <p>&copy; Acity Portal 2020-2021 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
       </footer>
     </main>
 
@@ -307,10 +327,42 @@
     <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
     <script src="/js/vendor/holder.min.js"></script>
     <script>
+      const copyToClipboard = str => {
+  const el = document.createElement('textarea');
+  el.value = str;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+};
+$(".copy").click(function(){
+  let el = $(this);
+  copyToClipboard(el.attr('ref-data'));
+  el.text('copied');
+  el.removeClass('btn-primary').addClass('btn-success');
+  setTimeout(function(){
+    el.removeClass('btn-success').addClass('btn-primary');
+    el.text('copy')
+  },2000)
+})
+$(document).on('click','.paster',function(){
+  navigator.clipboard.readText().then(d=>{
+    $(this).parent().parent().children("input").val(d)
+  }).catch(console.error)
+  // console.log()
+})
       let coursetemp = `<div class="course">
                                   <div class="inputg">
                                       <label>Course code</label>
-                                      <input class="form-control" name="coursecode" type="text">
+                                      <div class="input-group">
+                                        <input class="form-control" value="" name="coursecode" type="text">
+                                        <div class="input-group-append">
+                                          <button class="btn btn-outline-secondary paster" type="button">Paste</button>
+                                        </div>
+                                      </div>
                                   </div>
                                   <div class="inputg">
                                       <label>Credits</label>
@@ -318,7 +370,12 @@
                                   </div>
                                   <div class="inputg">
                                       <label>LecturerID</label>
-                                      <input type="text" name="lecturerID" class="form-control">
+                                      <div class="input-group">
+                                        <input class="form-control" value="" name="lecturerID" type="text">
+                                        <div class="input-group-append">
+                                          <button class="btn btn-outline-secondary paster" type="button">Paste</button>
+                                        </div>
+                                      </div>
                                   </div>
                               </div>`;
       function getyear(year){

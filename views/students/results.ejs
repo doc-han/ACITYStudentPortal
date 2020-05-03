@@ -78,18 +78,15 @@
 
                 <div class="text-center">
                     <img src="/img/staff-search.png" alt="">
-                    <h2>Search for student</h2>
-                    <h5 class="text-muted">Search by StudentID, Firstname or Surname </h5>
+                    <h2>Results</h2>
+                    <!-- <h5 class="text-muted">Search by StudentID, Firstname or Surname </h5> -->
                     <div class="input-group mb-3">
-                        <input type="text" class="searchinput form-control" placeholder="Search here" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                          <button class="searchbtn btn btn-outline-secondary" type="button">Search</button>
-                        </div>
-                    </div>
-                    <div class="container">
-                        <ul class="list-group">
-                            
-                        </ul>
+                        <select class="form-control" id="option">
+                            <% data.forEach(i=>{ %>
+                                <option value="<%=i.url%>"><%=i.text%></option>
+                            <% }) %>
+                        </select>
+                        <button id="view" class="btn btn-dark">View</button>
                     </div>
                     
                     
@@ -157,24 +154,10 @@
     <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
     <script src="/js/vendor/holder.min.js"></script>
     <script>
-      $(".searchbtn").click(function(){
-        let val = $(".searchinput").val();
-        $.ajax({
-            url: '/studentsearch',
-            method: 'POST',
-            data: {name: val},
-            success: function(res){
-                console.log(res)
-                $(".list-group").html("")
-                if(!res.length){
-                    $(".list-group").append(`<li class="list-group-item">No Student found!</li>`);
-                }
-                res.forEach(i=>{
-                    $(".list-group").append(`<a href="/studentviewer/${i.studentID}" class="list-group-item">${i.firstname} ${i.surname}</a>`);
-                })
-            }
+        $("#view").click(function(){
+            let v = $("#option").val();
+            window.location = v;
         })
-      })
     </script>
   </body>
 </html>
