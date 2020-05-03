@@ -54,6 +54,10 @@ let paidfeeSchema = new Schema({
 
 })
 
+feeSchema.pre('save', function(next){
+    next();
+})
+
 let fee = mongoose.model('fee', feeSchema);
 let paidfee = mongoose.model('paidfee', paidfeeSchema);
 

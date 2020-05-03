@@ -15,6 +15,10 @@ let studentScoreSchema = new Schema({
         type: Number,
         required: true
     },
+    year: {
+        type: Number,
+        required: true
+    },
     midsem: {
         type: Number,
     },

@@ -13,7 +13,8 @@ let lecturerSchema = new Schema({
 		},
 		lecturerID: {
 			type: String,
-			required: true
+			required: true,
+			unique: true
 		},
 		email: {
 			type: String,
@@ -29,7 +30,8 @@ let lecturerSchema = new Schema({
 		},
 		profilePic: {
 			type: String,
-			required: true
+			required: false,
+			default: "l06vu2fyqk6yjsayry6l"
 		}
 });
 
