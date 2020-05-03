@@ -27,8 +27,14 @@ function notLoggedIn(req,res,next){
 const config = require('../models/configModel');
 async function registrationOpen(req,res,next){
     config.findOne({metaname: 'registration'}).then(resp=>{
-        console.log("this is the resp");
-        if(!resp) res.redirect('/student/unavailable');
+        if(!resp.metaval) res.redirect('/student/unavailable');
+        else next();
+    })
+}
+
+async function resultsOpen(req,res,next){
+    config.findOne({metaname: 'result'}).then(resp=>{
+        if(!resp.metaval) res.redirect('/student/unavailable');
         else next();
     })
 }
@@ -41,5 +47,6 @@ module.exports = {
     staffLoggedIn,
     lecturerLoggedIn,
     notLoggedIn,
-    registrationOpen
+    registrationOpen,
+    resultsOpen
 }
