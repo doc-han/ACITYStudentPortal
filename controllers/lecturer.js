@@ -62,15 +62,15 @@ app.get('/grader', (req,res)=>{
 })
 
 function move(req,res,data){
-    console.log(data)
     res.render("lecturer/grader", data)
 }
 
 app.post('/grader', (req,res)=>{
     let body = JSON.parse(req.body.data);
     let courseID = body[0].value;
+    let year = body[1].value;
     body.forEach(function(i,e){
-        if(e!=0){
+        if(e>1){
             let sp = i.name.split("_");
             let id = sp[0];
             let isMid = sp[1] == "mid";
@@ -78,11 +78,11 @@ app.post('/grader', (req,res)=>{
             console.log(isMid)
             // Semester number has to be retrieved
             if(isMid){
-                studentScores.update({studentID: id,course: courseID,semester:1},{
+                studentScores.update({studentID: id, year, course: courseID,semester:1},{
                     "midsem": val
                 },{upsert: true}).then(console.log).catch(console.error);
             }else{
-                studentScores.update({studentID: id,course: courseID,semester:1},{
+                studentScores.update({studentID: id, year, course: courseID,semester:1},{
                     "endsem": val
                 },{upsert: true}).then(console.log).catch(console.error);
             }
@@ -96,7 +96,8 @@ app.post('/grader', (req,res)=>{
 
 app.get('/classes', (req,res)=>{
     lecturer.findOne({lecturerID: req.session.lecturerID}).then(ldata=>{
-        semCourses.find({lecturer: ldata._id}).populate("course programID").then(data=>{
+        //semester has to be set here
+        semCourses.find({lecturer: ldata._id, semester: 1}).populate("course programID").then(data=>{
             res.render("lecturer/classes", {data})
         })
     })

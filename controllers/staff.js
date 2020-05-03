@@ -114,6 +114,17 @@ app.post('/lecturers', upload.single('pic'), (req,res)=>{
 })
 
 // takes query program code and year
+app.get('/semviewer', (req,res,next)=>{
+	let {code, year} = req.query;
+	program.findOne({code}).then(data=>{
+		semcourse.find({programID: data._id, year, semester: 1}).populate("course").populate("lecturer").then(sem1res=>{
+			semcourse.find({programID: data._id, year, semester: 2}).populate("course").populate("lecturer").then(sem2res=>{
+				res.render('staff/semviewer', {data,code,year,sem1res, sem2res});
+			})
+		})
+	})
+})
+
 app.get('/semcourses', (req,res)=>{
 	let {code, year} = req.query;
 	course.find({}).then(cdata=>{
@@ -121,7 +132,6 @@ app.get('/semcourses', (req,res)=>{
 			program.findOne({code}).then(data=>{
 				semcourse.find({programID: data._id, year, semester: 1}).populate("course").populate("lecturer").then(sem1res=>{
 					semcourse.find({programID: data._id, year, semester: 2}).populate("course").populate("lecturer").then(sem2res=>{
-						console.log(sem1res);
 						res.render('staff/semcourses', {data,code,year,cdata,ldata,sem1res, sem2res});
 					})
 				})
@@ -207,12 +217,6 @@ async function savor(found,amtarr){
 }
 
 app.post('/xls', upload.single('xls'), (req,res)=>{
-	// res.sendFile(req.file.path);
-		// xlsParser.onFileSelection(req.file.path).then(data=>{
-		// 	console.log(data)
-		// }).catch(console.error)
-		// let file = fs.readFileSync(req.file.path, 'utf8');
-		// readExcelFile(file).then(console.log).catch(console.error)
 		let obj = nodeXLS.parse(fs.readFileSync(req.file.path));
 		let arr = new tings();
 		obj.forEach(i=>{
@@ -234,6 +238,105 @@ app.post('/xls', upload.single('xls'), (req,res)=>{
 		//console.log(obj[0].data)
 })
 
+class objecto {
+	constructor(len){
+		this.arr;
+		this.len = len;
+		this.arr = [];
+		for(let i=0;i<len;i++){
+			this.arr.push([]);
+		}
+		console.log(this.arr)
+	}
+	add(i,j,val){
+		this.arr[i][j] = val;
+	}
+	getArr(){
+		return this.arr;
+	}
+}
+
+function fileParser(arr,progs,func){
+	let resarr = [];
+	// console.log(arr[0].data)
+	arr.forEach(i=>{
+		i.data.forEach((j,e)=>{
+			if(e>0)resarr.push(func(j,progs))
+		})
+	})
+	return resarr;
+}
+
+function lecturerparser(arr,deps){
+	return {
+		firstname: arr[0],
+		surname: arr[1],
+		lecturerID: arr[2],
+		email: arr[3],
+		mobile: arr[4],
+		password: (rs.generate(7)).toLowerCase(),
+	}
+}
+
+function studentparser(arr,progs){
+	return {
+		firstname: arr[0],
+		surname: arr[1],
+		studentID: arr[2],
+		email: arr[3],
+		mobile: arr[4],
+		program: progs[arr[5]],
+		password: (rs.generate(7)).toLowerCase(),
+		year: arr[6]
+	}
+}
+
+app.post('/studentxls', upload.single('xls'), (req,res)=>{
+	let obj = nodeXLS.parse(fs.readFileSync(req.file.path));
+	program.find({}).then(resp=>{
+		let all = {};
+		resp.forEach(i=>{
+			all[i.code] = i._id;
+		})
+		
+		let studentArr = fileParser(obj,all,studentparser);
+		let sid = new Set();
+		let multipeIDS = false;
+		studentArr.forEach(i=>{
+			if(sid.has(i.studentID)) multipeIDS = true;
+			sid.add(i.studentID);
+		})
+		if(!multipeIDS){
+			student.insertMany(studentArr,(err,ress)=>{
+				if(err) throw err;
+				res.send("Upload was successfull!")
+			})
+		}else{
+			res.send("Some studentID's appeared multiple times;")
+		}
+		
+	})
+})
+
+app.post('/lecturerxls', upload.single('xls'), (req,res)=>{
+	let obj = nodeXLS.parse(fs.readFileSync(req.file.path));
+	let lecturerArr = fileParser(obj,[],lecturerparser);
+	let sid = new Set();
+		let multipeIDS = false;
+		lecturerArr.forEach(i=>{
+			if(sid.has(i.lecturerID)) multipeIDS = true;
+			sid.add(i.lecturerID);
+		})
+		if(!multipeIDS){
+			lecturer.insertMany(lecturerArr,(err,ress)=>{
+				if(err) throw err;
+				res.send("Upload was successfull!")
+			})
+		}else{
+			res.send("Some lecturerID's appeared multiple times;")
+		}
+})
+
 app.post('/config', (req,res)=>{
 	let {name, value} = req.body;
 	config.updateOne({metaname: name}, {$set: {metaval: value}},{upsert: true}).then(d=>{
@@ -242,8 +345,7 @@ app.post('/config', (req,res)=>{
 })
 
 app.get('/logout', (req,res)=>{
-	delete req.session.staff;
-	delete req.session.staffID;
+	req.session.destroy();
 	res.redirect('/login');
 })
 
