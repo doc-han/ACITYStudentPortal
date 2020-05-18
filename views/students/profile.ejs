@@ -28,56 +28,116 @@
 						<img src="<%=profilePic%>" width="100%" alt="" class="thumbnail">
 					</div>
 					<div class="col-lg-7">
-						<table class="table">
-							<tr>
-								<td>
-									First name
-								</td>
-								<td>
-									<input type="text" value="<%=student.firstname%>" class="form-control" readonly>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									Surname
-								</td>
-								<td>
-									<input type="text" value="<%=student.surname%>" class="form-control" readonly>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									StudentID
-								</td>
-								<td>
-									<input type="text" value="<%=student.studentID%>" class="form-control" readonly>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									Email
-								</td>
-								<td>
-									<input type="text" value="<%=student.email%>" class="form-control" readonly>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									Program
-								</td>
-								<td>
-									<input type="text" value="<%=student.program.name%>" class="form-control" readonly>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									Mobile
-								</td>
-								<td>
-									<input type="text" value="<%=student.mobile%>" class="form-control" readonly>
-								</td>
-							</tr>
-            </table>
+						<%if(locals.msg && msg==1){%>
+							<div class="alert alert-success">Profile has been updated!</div>
+						<%}%>
+						<% if(editable){ %>
+							<form method="POST">
+								<table class="table">
+									<tr>
+										<td>
+											First name
+										</td>
+										<td>
+											<input type="text" name="firstname" value="<%=student.firstname%>" class="form-control">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Surname
+										</td>
+										<td>
+											<input type="text" name="surname" value="<%=student.surname%>" class="form-control">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											StudentID
+										</td>
+										<td>
+											<input type="text" value="<%=student.studentID%>" class="form-control" readonly>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Email
+										</td>
+										<td>
+											<input type="text" name="email" value="<%=student.email%>" class="form-control">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Program
+										</td>
+										<td>
+											<input type="text" value="<%=student.program.name%>" class="form-control" readonly>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Mobile
+										</td>
+										<td>
+											<input type="text" name="mobile" value="<%=student.mobile%>" class="form-control">
+										</td>
+									</tr>
+					</table>
+					<button type="submit" class="btn btn-primary">Update Profile</button>
+							</form>
+						<% }else{ %>
+							<table class="table">
+								<tr>
+									<td>
+										First name
+									</td>
+									<td>
+										<input type="text" value="<%=student.firstname%>" class="form-control" readonly>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Surname
+									</td>
+									<td>
+										<input type="text" value="<%=student.surname%>" class="form-control" readonly>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										StudentID
+									</td>
+									<td>
+										<input type="text" value="<%=student.studentID%>" class="form-control" readonly>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Email
+									</td>
+									<td>
+										<input type="text" value="<%=student.email%>" class="form-control" readonly>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Program
+									</td>
+									<td>
+										<input type="text" value="<%=student.program.name%>" class="form-control" readonly>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Mobile
+									</td>
+									<td>
+										<input type="text" value="<%=student.mobile%>" class="form-control" readonly>
+									</td>
+								</tr>
+				</table>
+						<% } %>
+						
 					</div>
         </div>
 
@@ -94,6 +154,7 @@
     <script src="/js/vendor/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+
 	<script src="/js/vendor/holder.min.js"></script>
   </body>
 </html>

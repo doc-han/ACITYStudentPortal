@@ -18,7 +18,7 @@ app.get('/profile',(req,res)=>{
     lecturer.findOne({lecturerID}).then(data=>{
         console.log(data)
         let profilePic = cloudinary.url(data.profilePic);
-        res.render('lecturer/profile', {lecturer: data,profilePic});
+        res.render('lecturer/profile', {editable:false, lecturer: data,profilePic});
     })
 })
 

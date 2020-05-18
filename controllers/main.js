@@ -34,7 +34,13 @@ router.get('/studentviewer/:studentID', (req, res) => {
     let { studentID } = req.params;
     student.findOne({ studentID }).populate("program").then(data => {
         let profilePic = cloudinary.url(data.profilePic);
-        res.render('students/profile', { student: data, profilePic });
+        res.render('students/profile', { editable: true, student: data, profilePic, msg: req.query.done });
+    })
+})
+router.post('/studentviewer/:studentID', (req,res) => {
+    let { studentID } = req.params;
+    student.findOneAndUpdate({studentID},req.body).then(result=>{
+        res.redirect(`/studentviewer/${studentID}?done=1`);
     })
 })
 
@@ -42,7 +48,13 @@ router.get('/lecturerviewer/:lecturerID', (req, res) => {
     let { lecturerID } = req.params;
     lecturer.findOne({ lecturerID }).then(data => {
         let profilePic = cloudinary.url(data.profilePic);
-        res.render('lecturer/profile', { lecturer: data, profilePic });
+        res.render('lecturer/profile', { editable: true, lecturer: data, profilePic, msg: req.query.done });
+    })
+})
+router.post('/lecturerviewer/:lecturerID', (req,res) =>{
+    let { lecturerID } = req.params;
+    lecturer.findOneAndUpdate({lecturerID}, req.body).then(result=>{
+        res.redirect(`/lecturerviewer/${lecturerID}?done=1`);
     })
 })
 

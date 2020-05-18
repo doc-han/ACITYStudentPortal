@@ -17,7 +17,7 @@ app.get('/profile', (req, res) => {
 	let { studentID } = req.session;
 	student.findOne({ studentID }).populate("program").then(data => {
 		let profilePic = cloudinary.url(data.profilePic);
-		res.render('students/profile', { student: data, profilePic });
+		res.render('students/profile', { editable: false,student: data, profilePic });
 	})
 
 })
